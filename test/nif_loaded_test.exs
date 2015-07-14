@@ -6,17 +6,17 @@ defmodule NifLoadTest do
   end
 
   test "ccc_iconv_open" do
-    assert CCC.Converter.nif_iconv_open("utf-8", "euc-jp") == ""
+    assert CCC.Converter.nif_iconv_open("UTF-8", "EUC-JP") == ""
   end
 
   test "ccc_iconv_close" do
-    cd = CCC.Converter.nif_iconv_open("utf-8", "euc-jp")
+    cd = CCC.Converter.nif_iconv_open("UTF-8", "EUC-JP")
     assert CCC.Converter.nif_iconv_close(cd) == :ok
   end
 
   test "ccc_iconv_convert" do
-    cd = CCC.Converter.nif_iconv_open("utf-8", "euc-jp")
-    assert CCC.Converter.nif_iconv_convert(cd, "こんにちわ") == 1
+    cd = CCC.Converter.nif_iconv_open("EUC-JP", "UTF-8")
+    assert CCC.Converter.nif_iconv_convert(cd, <<"こんにちわ"::utf8>>) == 1
     assert CCC.Converter.nif_iconv_close(cd) == :ok
   end
 end

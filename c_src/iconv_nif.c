@@ -1,6 +1,9 @@
+#include <errno.h>
 #include <string.h>
 #include <erl_nif.h>
 #include <iconv.h>
+
+#include "utils.h"
 
 typedef struct {
     iconv_t cd;
@@ -20,6 +23,13 @@ static ERL_NIF_TERM ccc_iconv_open(ErlNifEnv* env, int argc, const ERL_NIF_TERM 
     enif_inspect_binary(env, argv[1], &to_code);
 
     icv->cd = iconv_open((const char *)from_code.data, (const char *)to_code.data);
+
+    if ((int)(icv->cd) == -1) {
+        if (errno == EINVAL) {
+            char* message = "invalid from_code and/or to_code";
+            return utils_error_message(env, message);
+        }
+    }
 
     ERL_NIF_TERM resource = enif_make_resource(env, icv);
     enif_release_resource(icv);
@@ -48,8 +58,7 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
     char* output;
     output = (char *)malloc(outbytes_left * sizeof(char));
 
-    int a = iconv(icv->cd, (char **)(&input.data), &inbytes_left, &output, &outbytes_left);
-    return enif_make_int(env, a);
+    int a = iconv(icv->cd, (char **)(&input.data), &inbytes_left, (char **)&output, &outbytes_left);
 
     unsigned char* bin;
     size_t len = strlen(output);
@@ -58,7 +67,6 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
     bin = enif_make_new_binary(env, len, &term);
     memcpy(bin, output, len);
 
-    return enif_make_atom(env, "ok");
     return term;
 }
 
