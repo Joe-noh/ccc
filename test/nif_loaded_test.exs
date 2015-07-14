@@ -4,4 +4,8 @@ defmodule NifLoadTest do
   test "nif functions are loaded" do
     assert CCC.Converter.nif_ok == :ok
   end
+
+  test "ccc_iconv_open" do
+    assert CCC.Converter.nif_iconv_open("utf-8", "euc-jp") == ""
+  end
 end
