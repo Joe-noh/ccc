@@ -1,3 +1,4 @@
+#include <string.h>
 #include <erl_nif.h>
 #include <iconv.h>
 
@@ -35,6 +36,32 @@ static ERL_NIF_TERM ccc_iconv_close(ErlNifEnv* env, int argc, const ERL_NIF_TERM
     return enif_make_atom(env, "ok");
 }
 
+static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    ccc_iconv* icv;
+    enif_get_resource(env, argv[0], ccc_iconv_type, (void **)&icv);
+
+    ErlNifBinary input;
+    enif_inspect_binary(env, argv[1], &input);
+
+    size_t inbytes_left = input.size;
+    size_t outbytes_left = 4*inbytes_left;
+    char* output;
+    output = (char *)malloc(outbytes_left * sizeof(char));
+
+    int a = iconv(icv->cd, (char **)(&input.data), &inbytes_left, &output, &outbytes_left);
+    return enif_make_int(env, a);
+
+    unsigned char* bin;
+    size_t len = strlen(output);
+    ERL_NIF_TERM term;
+
+    bin = enif_make_new_binary(env, len, &term);
+    memcpy(bin, output, len);
+
+    return enif_make_atom(env, "ok");
+    return term;
+}
+
 static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
     ErlNifResourceType* rt;
 
@@ -50,6 +77,7 @@ static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
 static ErlNifFunc nif_functions[] = {
     {"nif_iconv_open", 2, ccc_iconv_open},
     {"nif_iconv_close", 1, ccc_iconv_close},
+    {"nif_iconv_convert", 2, ccc_iconv_convert},
     {"nif_ok", 0, ccc_ok}
 };
 
