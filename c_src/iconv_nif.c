@@ -26,6 +26,15 @@ static ERL_NIF_TERM ccc_iconv_open(ErlNifEnv* env, int argc, const ERL_NIF_TERM 
     return resource;
 }
 
+static ERL_NIF_TERM ccc_iconv_close(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+    ccc_iconv* icv;
+    enif_get_resource(env, argv[0], ccc_iconv_type, (void **)&icv);
+
+    iconv_close(icv->cd);
+
+    return enif_make_atom(env, "ok");
+}
+
 static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
     ErlNifResourceType* rt;
 
@@ -40,6 +49,7 @@ static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
 
 static ErlNifFunc nif_functions[] = {
     {"nif_iconv_open", 2, ccc_iconv_open},
+    {"nif_iconv_close", 1, ccc_iconv_close},
     {"nif_ok", 0, ccc_ok}
 };
 

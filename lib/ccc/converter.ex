@@ -16,5 +16,6 @@ defmodule CCC.Converter do
   end
 
   def nif_iconv_open(_from, _to), do: nif
+  def nif_iconv_close(_cd), do: nif
   def nif_ok, do: nif
 end

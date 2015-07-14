@@ -8,4 +8,9 @@ defmodule NifLoadTest do
   test "ccc_iconv_open" do
     assert CCC.Converter.nif_iconv_open("utf-8", "euc-jp") == ""
   end
+
+  test "ccc_iconv_close" do
+    cd = CCC.Converter.nif_iconv_open("utf-8", "euc-jp")
+    assert CCC.Converter.nif_iconv_close(cd) == :ok
+  end
 end
