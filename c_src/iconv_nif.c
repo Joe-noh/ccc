@@ -60,18 +60,25 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
     size_t inbytes_left = input.size;
     size_t outbytes_left = 4*inbytes_left;
     char* output;
-    output = (char *)malloc(outbytes_left * sizeof(char));
+    output = calloc(outbytes_left, 1);
+    char* p = output;
 
-    int a = iconv(icv->cd, (char **)(&input.data), &inbytes_left, (char **)&output, &outbytes_left);
+    int res = (int)iconv(icv->cd, (char **)(&input.data), &inbytes_left, &output, &outbytes_left);
 
-    unsigned char* bin;
-    size_t len = strlen(output);
-    ERL_NIF_TERM term;
+    if (res == -1) {
+        switch(errno) {
+        case EILSEQ:
+            return utils_error_message(env, "invalid multibyte sequence");
+        case EINVAL:
+            return utils_error_message(env, "incomplete multibyte sequence");
+        case E2BIG:
+            return utils_error_message(env, "no more room");
+        default:
+            return utils_error_message(env, strerror(errno));
+        }
+    }
 
-    bin = enif_make_new_binary(env, len, &term);
-    memcpy(bin, output, len);
-
-    return term;
+    return utils_chars_to_binary(env, (const unsigned char*)p, strlen(p));
 }
 
 static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
