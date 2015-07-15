@@ -41,7 +41,11 @@ static ERL_NIF_TERM ccc_iconv_close(ErlNifEnv* env, int argc, const ERL_NIF_TERM
     ccc_iconv* icv;
     enif_get_resource(env, argv[0], ccc_iconv_type, (void **)&icv);
 
-    iconv_close(icv->cd);
+    int res = (int)iconv_close(icv->cd);
+
+    if (res == -1) {
+        return utils_error_message(env, strerror(errno));
+    }
 
     return enif_make_atom(env, "ok");
 }
