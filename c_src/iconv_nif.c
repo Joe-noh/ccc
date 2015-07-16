@@ -59,11 +59,10 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
 
     size_t inbytes_left = input.size;
     size_t outbytes_left = 4*inbytes_left;
-    char* output;
-    output = calloc(outbytes_left, 1);
-    char* p = output;
+    char* out_buf = calloc(outbytes_left, 1);
+    char* output = out_buf;
 
-    int res = (int)iconv(icv->cd, (char **)(&input.data), &inbytes_left, &output, &outbytes_left);
+    int res = (int)iconv(icv->cd, (char **)(&input.data), &inbytes_left, &out_buf, &outbytes_left);
 
     if (res == -1) {
         switch(errno) {
@@ -78,7 +77,7 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
         }
     }
 
-    return utils_chars_to_binary(env, (const unsigned char*)p, strlen(p));
+    return utils_chars_to_binary(env, (const unsigned char*)output, strlen(output));
 }
 
 static int on_load(ErlNifEnv* env, void** priv, ERL_NIF_TERM info) {
