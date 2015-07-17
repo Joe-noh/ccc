@@ -66,4 +66,4 @@ static ErlNifFunc nif_functions[] = {
     {"convert", 3, ccc_iconv_convert}
 };
 
-ERL_NIF_INIT(Elixir.CCC.Converter, nif_functions, 0, 0, 0, NULL);
+ERL_NIF_INIT(Elixir.CCC, nif_functions, 0, 0, 0, NULL);
