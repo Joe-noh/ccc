@@ -1,19 +1,13 @@
 defmodule CCC do
-  use Application
+  @on_load {:init, 0}
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
-  def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
-    children = [
-      # Define workers and child supervisors to be supervised
-      # worker(CCC.Worker, [arg1, arg2, arg3])
-    ]
-
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: CCC.Supervisor]
-    Supervisor.start_link(children, opts)
+  def init do
+    [__DIR__, ~w[.. priv iconv]]
+    |> List.flatten
+    |> Path.join
+    |> String.to_char_list
+    |> :erlang.load_nif(0)
   end
+
+  def convert(_string, _from, _to), do: exit(:nif_not_loaded)
 end
