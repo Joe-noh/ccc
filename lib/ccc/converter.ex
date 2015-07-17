@@ -9,11 +9,5 @@ defmodule CCC.Converter do
     |> :erlang.load_nif(0)
   end
 
-  defmacrop nif do
-    quote do
-      exit(:nif_not_loaded)
-    end
-  end
-
-  def nif_ok, do: nif
+  def convert(_string, _from, _to), do: exit(:nif_not_loaded)
 end
