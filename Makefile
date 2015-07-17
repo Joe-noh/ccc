@@ -16,6 +16,6 @@ priv:
 	@mkdir -p priv
 
 $(NIF_SO): priv
-	$(CC) $(ERLANG_FLAGS) $(NIF_SRC) $(OPTIONS) -o priv/iconv.so
+	$(CC) -fPIC $(ERLANG_FLAGS) $(NIF_SRC) $(OPTIONS) -o priv/iconv.so
 
 .PHONY: all
