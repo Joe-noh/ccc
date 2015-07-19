@@ -1,6 +1,6 @@
 defmodule CCC do
   @moduledoc """
-  This module provides a function `convert/3`.
+  This module provides a function `convert/4`.
   It converts characterset of given string from `from` to `to`.
 
       iex> hello_euc = CCC.convert "こんにちわ", "UTF-8", "EUC-JP"
@@ -19,17 +19,23 @@ defmodule CCC do
     |> :erlang.load_nif(0)
   end
 
-  @spec convert(String.t, Strings.t, String.t) :: String.t | {:error, String.t}
+  @spec convert(String.t, String.t, String.t, Keyword.t) :: String.t | {:error, String.t}
   @doc """
   Perform the characterset conversion and returns the result.
 
   See [libiconv documents](http://www.gnu.org/software/libiconv/) for more info.
-  """
-  def convert(_string, _from, _to), do: exit(:nif_not_loaded)
 
-  def convert(string, from, to, opts) do
+  ### options
+
+  - `discard_unsupported`: If `true`, the characters that can't be represented in `to` code will be discarded.
+  """
+  def convert(string, from, to, opts \\ []) do
     if Keyword.get(opts, :discard_unsupported, false) do
-      convert(string, from, to <> "//IGNORE")
+      do_convert(string, from, to <> "//IGNORE")
+    else
+      do_convert(string, from, to)
     end
   end
+
+  defp do_convert(_string, _from, _to), do: exit(:nif_not_loaded)
 end
