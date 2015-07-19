@@ -20,7 +20,8 @@ defmodule CCC.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      compilers: [:nif | Mix.compilers],
-     deps: deps]
+     deps: deps,
+     docs: docs]
   end
 
   def application do
