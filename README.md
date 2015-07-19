@@ -1,6 +1,6 @@
 # CCC
 
-[![Build Status](http://travis-ci.org/Joe-noh/ccc.svg?branch=master "Build Status")](https://travis-ci.org/Joe-noh/ccc)
+[![wercker status](https://app.wercker.com/status/c64a1546487124931d66163484b1c329/s/master "wercker status")](https://app.wercker.com/project/bykey/c64a1546487124931d66163484b1c329)
 
 ### What's this?
 
