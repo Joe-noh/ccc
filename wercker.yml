@@ -1,6 +1,19 @@
 box: trenpixster/elixir:1.0.5
 build:
   steps:
+    - install-packages:
+      packages: gnulib
+    - script:
+      name: Install libiconv
+      code: |
+        curl -O http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+        tar zxf libiconv-1.14.tar.gz
+        pushd libiconv-1.14
+        ./configure --prefix=/usr/local
+        make
+        sudo make install
+        sudo ldconfig
+        popd
     - script:
       name: Mix test
       code: |
