@@ -21,4 +21,14 @@ defmodule CCCTest do
     assert C.convert(@eucjp, "EUC-JP", "Shift_JIS") == @sjis
     assert C.convert(@sjis,  "Shift_JIS", "EUC-JP") == @eucjp
   end
+
+  test "cannot covert unsupported multibyte sequence" do
+    {:error, msg} = C.convert("私は🍣が好きです", "UTF-8", "EUC-JP")
+    assert msg =~ ~r/invalid multibyte sequence/i
+  end
+
+  test "discard unsupported character" do
+    euc = C.convert("私は🍣が好きです", "UTF-8", "EUC-JP", discard_unsupported: true)
+    assert C.convert(euc, "EUC-JP", "UTF-8") == "私はが好きです"
+  end
 end
