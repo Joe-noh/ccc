@@ -1,13 +1,24 @@
 defmodule CCC do
   @moduledoc """
   This module provides a function `convert/4`.
-  It converts characterset of given string from `from` to `to`.
+  It converts characterset of given `string` from `from` to `to`.
 
       iex> hello_euc = CCC.convert "こんにちわ", "UTF-8", "EUC-JP"
       <<164, 179, 164, 243, 164, 203, 164, 193, 164, 239>>
 
       iex> CCC.convert hello_euc, "EUC-JP", "UTF-8"
       "こんにちわ"
+
+  If the `string` contains letters that can't be represented in `to` charscter set,
+  `{:error, "invalid multibyte sequence"}` is returned.
+
+      iex> CCC.convert "🍣", "UTF-8", "EUC-JP"
+      {:error, "invalid multibyte sequence"}
+
+  Give `discard_unsupported: true` when you want them to be ignored.
+
+      iex> CCC.convert "🍣", "UTF-8", "EUC-JP", discard_unsupported: true
+      ""
   """
 
   @on_load {:init, 0}
