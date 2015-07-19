@@ -1,0 +1,8 @@
+box: trenpixster/elixir:1.0.5
+build:
+  steps:
+    - script:
+      name: Mix test
+      code: |
+        mix test
+
