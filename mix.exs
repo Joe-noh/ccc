@@ -4,9 +4,7 @@ defmodule Mix.Tasks.Compile.Nif do
   @shortdoc "invoke make"
 
   def run(_) do
-    if Mix.shell.cmd("make") != 0 do
-      raise Mix.Error, "make failed"
-    end
+    if Mix.shell.cmd("make") != 0, do: Mix.raise "make failed"
   end
 end
 
@@ -17,29 +15,38 @@ defmodule CCC.Mixfile do
     [app: :ccc,
      version: "0.0.1",
      elixir: "~> 1.0",
+     description: description,
+     package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      compilers: [:nif | Mix.compilers],
      deps: deps]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type `mix help compile.app` for more information
   def application do
     [applications: [:logger]]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [{:earmark, "~> 0.1", only: :dev},
+     {:ex_doc,  "~> 0.7", only: :dev}]
+  end
+
+  defp description do
+    "Character Code Converter"
+  end
+
+  defp package do
+    [files: ["lib", "c_src", "mix.exs", "Makefile", "README*", "LICENSE*"],
+     build_tools: ["mix"],
+     contributors: ["Joe Honzawa"],
+     licenses: ["MIT"],
+     links: %{
+       "GitHub" => "https://github.com/Joe-noh/ccc"
+     }]
+  end
+
+  defp docs do
+    [readme: "README.md", main: "README"]
   end
 end
