@@ -26,4 +26,10 @@ defmodule CCC do
   See [libiconv documents](http://www.gnu.org/software/libiconv/) for more info.
   """
   def convert(_string, _from, _to), do: exit(:nif_not_loaded)
+
+  def convert(string, from, to, opts) do
+    if Keyword.get(opts, :discard_unsupported, false) do
+      convert(string, from, to <> "//IGNORE")
+    end
+  end
 end
