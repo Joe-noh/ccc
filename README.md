@@ -13,6 +13,9 @@ This is a library for converting character code.
 
 iex> CCC.convert "概ねアグリー", "UTF-8", "EUC-JP"
 <<179, 181, 164, 205, 165, 162, 165, 176, 165, 234, 161, 188>>
+
+iex> CCC.convert "🍺", "UTF-8", "EUC-JP", discard_unsupported: true
+""
 ```
 
 CCC uses libiconv. Please refer to [the documents](http://www.gnu.org/software/libiconv/).
