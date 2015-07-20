@@ -63,7 +63,7 @@ static ERL_NIF_TERM ccc_iconv_convert(ErlNifEnv* env, int argc, const ERL_NIF_TE
 }
 
 static ErlNifFunc nif_functions[] = {
-    {"convert", 3, ccc_iconv_convert}
+    {"do_convert", 3, ccc_iconv_convert}
 };
 
 ERL_NIF_INIT(Elixir.CCC, nif_functions, 0, 0, 0, NULL);

@@ -1,6 +1,10 @@
-box: trenpixster/elixir:1.0.5
+box: xtity/docker-centos7-elixir
 build:
   steps:
+    - script:
+      name: Install packages
+      code: |
+        yum -y install libiconv-devel
     - script:
       name: Mix test
       code: |
